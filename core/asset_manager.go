@@ -19,9 +19,11 @@ type Asset[C Context] interface {
 	// Init is called once the asset is registered.
 	Init(App[C]) error
 
-	FilePath() string
+	Path() string
+	SetPath(string)
 	Type() AssetType
 	Scope() Scope
+	SetScope(Scope)
 }
 
 type AssetManager[C Context] interface {

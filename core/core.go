@@ -9,7 +9,9 @@ func (s Scope) String() string {
 }
 
 const (
-	ScopeGlobal Scope = "global"
+	ScopeGlobal   Scope = "global"
+	ScopeMultiple Scope = "multiple"
+	ScopeNone		 Scope = "none"
 )
 
 type System[C Context] interface {
@@ -21,7 +23,6 @@ type System[C Context] interface {
 	Actions() []Action[C]
 	Components() []Component[C]
 	Assets() []Asset[C]
-
 
 	Setup() SetupData
 	Render(data SetupData) any

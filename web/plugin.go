@@ -18,6 +18,7 @@ func NewWebPlugin() *WebPlugin {
 func (p *WebPlugin) Init(app core.App[*Context]) error {
 	app.SetPresenter(NewHttpPresenter())
 	app.Presenter().SetRenderer(NewWebRenderer())
+	app.SetAssetManager(NewAssetManager())
 	app.Presenter().RegisterAction(core.NewActionFunc[*Context](OpHttpGet, "/", func(ctx *Context) any {
 		return html.H1(g.Text("Hello, world!"))
 	}))
