@@ -3,7 +3,7 @@ package web
 import (
 	"fmt"
 
-	"github.com/marlaone/engine/core"
+	"github.com/marlaone/morphadon/core"
 )
 
 type WebAsset struct {

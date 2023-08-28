@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/marlaone/engine/web"
+	"github.com/marlaone/morphadon/web"
 )
 
 func main() {

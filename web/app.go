@@ -1,8 +1,8 @@
 package web
 
 import (
-	"github.com/marlaone/engine"
-	"github.com/marlaone/engine/core"
+	engine "github.com/marlaone/morphadon"
+	"github.com/marlaone/morphadon/core"
 )
 
 func CreateWebApp() core.App[*Context] {

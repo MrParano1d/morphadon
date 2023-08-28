@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/marlaone/engine/core"
-	"github.com/marlaone/engine/web"
+	"github.com/marlaone/morphadon/core"
+	"github.com/marlaone/morphadon/web"
 )
 
 type ExampleSystem struct {

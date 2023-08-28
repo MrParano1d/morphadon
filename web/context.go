@@ -4,7 +4,7 @@ import (
 	"context"
 
 	g "github.com/maragudk/gomponents"
-	"github.com/marlaone/engine/core"
+	"github.com/marlaone/morphadon/core"
 )
 
 type Context struct {

@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/marlaone/engine/core"
+	"github.com/marlaone/morphadon/core"
 )
 
 type PageAction struct {

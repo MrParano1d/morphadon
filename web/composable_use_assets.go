@@ -2,7 +2,7 @@ package web
 
 import (
 	"github.com/marlaone/engine"
-	"github.com/marlaone/engine/core"
+	"github.com/marlaone/morphadon/core"
 )
 
 type useAssetsInstance struct {

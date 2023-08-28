@@ -1,6 +1,6 @@
 package engine
 
-import "github.com/marlaone/engine/core"
+import "github.com/marlaone/morphadon/core"
 
 var app any
 

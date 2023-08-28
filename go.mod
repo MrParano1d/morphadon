@@ -1,4 +1,4 @@
-module github.com/marlaone/engine
+module github.com/marlaone/morphadon
 
 go 1.21
 
