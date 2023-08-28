@@ -1,0 +1,3 @@
+.example-button {
+  @apply w-full h-12 rounded-md bg-blue-500 text-white;
+}

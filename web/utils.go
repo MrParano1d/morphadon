@@ -15,10 +15,6 @@ func h(c any, ctx *Context) g.Node {
 		component := v
 		component.SetContext(ctx)
 		return component.Render(component.Setup()).(g.Node)
-	case core.System[*Context]:
-		page := v
-		page.SetContext(ctx)
-		return page.Render(page.Setup()).(g.Node)
 	case g.Node:
 		return c.(g.Node)
 	case []g.Node:
@@ -46,18 +42,4 @@ func RenderSlot(slotName string, c core.Component[*Context]) (g.Node, error) {
 		return rendered, nil
 	}
 	return nil, fmt.Errorf("invalid slot type: %v", reflect.ValueOf(slot).Type())
-}
-
-func resolvePageComponents(components []core.Component[*Context], pages ...core.System[*Context]) []core.Component[*Context] {
-	for _, page := range pages {
-		components = append(components, resolveComponents(page.Components()...)...)
-	}
-	return components
-}
-
-func resolveComponents(components ...core.Component[*Context]) []core.Component[*Context] {
-	for _, c := range components {
-		components = append(components, resolveComponents(c.Components()...)...)
-	}
-	return components
 }

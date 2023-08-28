@@ -5,8 +5,6 @@ type SetupData map[string]interface{}
 type Component[C Context] interface {
 	Setup() SetupData
 	Assets() []Asset[C]
-	Stylesheets() []Asset[C]
-	Scripts() []Asset[C]
 	Slots() Slots
 	Props() Properties
 	Context() C
@@ -63,14 +61,6 @@ func (c *DefaultComponent[C]) Props() Properties {
 }
 
 func (c *DefaultComponent[C]) Assets() []Asset[C] {
-	return make([]Asset[C], 0)
-}
-
-func (c *DefaultComponent[C]) Scripts() []Asset[C] {
-	return make([]Asset[C], 0)
-}
-
-func (c *DefaultComponent[C]) Stylesheets() []Asset[C] {
 	return make([]Asset[C], 0)
 }
 

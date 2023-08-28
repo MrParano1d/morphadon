@@ -15,6 +15,9 @@ type Action[C Context] interface {
 	Scope() Scope
 	Execute(C) any
 
+	Assets() []Asset[C]
+	Components() []Component[C]
+
 	Renderer() Renderer[C]
 	SetRenderer(Renderer[C])
 }
@@ -59,4 +62,12 @@ func (a *ActionFunc[C]) Scope() Scope {
 
 func (a *ActionFunc[C]) Execute(ctx C) any {
 	return a.fn(ctx)
+}
+
+func (a *ActionFunc[C]) Assets() []Asset[C] {
+	return make([]Asset[C], 0)
+}
+
+func (a *ActionFunc[C]) Components() []Component[C] {
+	return make([]Component[C], 0)
 }

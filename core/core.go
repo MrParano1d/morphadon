@@ -9,9 +9,10 @@ func (s Scope) String() string {
 }
 
 const (
-	ScopeGlobal   Scope = "global"
-	ScopeMultiple Scope = "multiple"
-	ScopeNone		 Scope = "none"
+	ScopeGlobal    Scope = "global"
+	ScopeMultiple  Scope = "multiple"
+	ScopeComponent Scope = "component"
+	ScopeNone      Scope = "none"
 )
 
 type System[C Context] interface {
@@ -21,11 +22,6 @@ type System[C Context] interface {
 	SetContext(C)
 
 	Actions() []Action[C]
-	Components() []Component[C]
-	Assets() []Asset[C]
-
-	Setup() SetupData
-	Render(data SetupData) any
 }
 
 type Plugin[C Context] interface {

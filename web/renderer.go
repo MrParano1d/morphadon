@@ -3,6 +3,7 @@ package web
 import (
 	"fmt"
 	"io"
+	"log"
 
 	g "github.com/maragudk/gomponents"
 	"github.com/marlaone/engine/core"
@@ -22,9 +23,13 @@ func (r *WebRenderer) Init(core.App[*Context]) error {
 }
 
 func (r *WebRenderer) Render(data any, w io.Writer) error {
+	if data == nil {
+		log.Println("[warn] WebRenderer.Render called with nil data")
+		return nil
+	}
 	node, ok := data.(g.Node)
 	if !ok {
-		return fmt.Errorf("data is not a g.Node")
+		return fmt.Errorf("data is not a g.Node, but a %T", data)
 	}
 	return node.Render(w)
 }

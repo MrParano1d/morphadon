@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -11,6 +14,8 @@ import (
 )
 
 type MarlaHttpPresenter struct {
+	app core.App[*Context]
+
 	router   *chi.Mux
 	renderer core.Renderer[*Context]
 }
@@ -23,6 +28,9 @@ func NewHttpPresenter() *MarlaHttpPresenter {
 	r.Use(middleware.RealIP)
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
+	workDir, _ := os.Getwd()
+	filesDir := http.Dir(filepath.Join(workDir, "public"))
+	FileServer(r, "/public", filesDir)
 
 	return &MarlaHttpPresenter{
 		router:   r,
@@ -31,6 +39,7 @@ func NewHttpPresenter() *MarlaHttpPresenter {
 }
 
 func (p *MarlaHttpPresenter) Init(app core.App[*Context]) error {
+	p.app = app
 	return nil
 }
 
@@ -59,6 +68,13 @@ func (p *MarlaHttpPresenter) actionHandler(action core.Action[*Context]) http.Ha
 }
 
 func (p *MarlaHttpPresenter) RegisterAction(action core.Action[*Context]) error {
+
+	for _, component := range action.Components() {
+		for _, componentAsset := range component.Assets() {
+			componentAsset.SetScope(action.Scope())
+		}
+	}
+
 	switch action.Operation() {
 	case OpHttpGet:
 		p.router.Get(action.Scope().String(), p.actionHandler(action))
@@ -84,4 +100,25 @@ func (p *MarlaHttpPresenter) RegisterAction(action core.Action[*Context]) error 
 func (p *MarlaHttpPresenter) Start() error {
 	log.Println("Starting HTTP server on port 8080")
 	return http.ListenAndServe(":8080", p.router)
+}
+
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func FileServer(r chi.Router, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit any URL parameters.")
+	}
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, func(w http.ResponseWriter, r *http.Request) {
+		rctx := chi.RouteContext(r.Context())
+		pathPrefix := strings.TrimSuffix(rctx.RoutePattern(), "/*")
+		fs := http.StripPrefix(pathPrefix, http.FileServer(root))
+		fs.ServeHTTP(w, r)
+	})
 }

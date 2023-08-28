@@ -1,5 +1,9 @@
 package core
 
+import (
+	"slices"
+)
+
 type AssetType string
 
 const (
@@ -15,12 +19,26 @@ const (
 	AssetTypeAny  AssetType = "any"
 )
 
+var AssetImageTypes = []AssetType{
+	AssetTypePNG,
+	AssetTypeJPG,
+	AssetTypeGIF,
+	AssetTypeICO,
+	AssetTypeSVG,
+}
+
+func IsImageAssetType(assetType AssetType) bool {
+	return slices.Contains(AssetImageTypes, assetType)
+}
+
 type Asset[C Context] interface {
 	// Init is called once the asset is registered.
 	Init(App[C]) error
 
 	Path() string
 	SetPath(string)
+	TargetPath() string
+	SetTargetPath(string)
 	Type() AssetType
 	Scope() Scope
 	SetScope(Scope)

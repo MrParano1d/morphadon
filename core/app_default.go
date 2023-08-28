@@ -28,6 +28,9 @@ func (app *DefaultApp[C]) Use(plugins ...Plugin[C]) App[C] {
 }
 
 func (app *DefaultApp[C]) SetPresenter(p Presenter[C]) {
+	if err := p.Init(app); err != nil {
+		log.Fatalf("failed to init presenter %T: %v", p, err)
+	}
 	app.presenter = p
 }
 
@@ -38,26 +41,21 @@ func (app *DefaultApp[C]) Presenter() Presenter[C] {
 func (app *DefaultApp[C]) RegisterSystem(s System[C]) error {
 
 	for _, action := range s.Actions() {
-		if err := action.Init(app); err != nil {
-			return fmt.Errorf("failed to init action %T in system %T: %w", action, s, err)
+
+		for _, component := range action.Components() {
+			if err := app.RegisterComponent(component); err != nil {
+				return fmt.Errorf("failed to register component %T in action %T: %w", component, action, err)
+			}
 		}
+
+		for _, asset := range action.Assets() {
+			if err := app.assetManager.RegisterAsset(asset); err != nil {
+				return fmt.Errorf("failed to register asset %T in action %T: %w", asset, action, err)
+			}
+		}
+
 		if err := app.presenter.RegisterAction(action); err != nil {
 			return fmt.Errorf("failed to register action %T in system %T: %w", action, s, err)
-		}
-	}
-
-	for _, component := range s.Components() {
-		if err := app.RegisterComponent(component); err != nil {
-			return fmt.Errorf("failed to register component %T in system %T: %w", component, s, err)
-		}
-	}
-
-	for _, asset := range s.Assets() {
-		if err := asset.Init(app); err != nil {
-			return fmt.Errorf("failed to init asset %T in system %T: %w", asset, s, err)
-		}
-		if err := app.assetManager.RegisterAsset(asset); err != nil {
-			return fmt.Errorf("failed to register asset %T in system %T: %w", asset, s, err)
 		}
 	}
 
@@ -73,6 +71,23 @@ func (app *DefaultApp[C]) SetAssetManager(am AssetManager[C]) {
 }
 
 func (app *DefaultApp[C]) RegisterComponent(c Component[C]) error {
+
+	for _, component := range c.Components() {
+		if component == c {
+			log.Printf("Component %T is trying to register itself, skipping\n", component)
+			continue
+		}
+		if err := app.RegisterComponent(component); err != nil {
+			return fmt.Errorf("failed to register component %T in component %T: %w", component, c, err)
+		}
+	}
+
+	for _, asset := range c.Assets() {
+		if err := app.assetManager.RegisterAsset(asset); err != nil {
+			return fmt.Errorf("failed to register asset %T in component %T: %w", asset, c, err)
+		}
+	}
+
 	return nil
 }
 
