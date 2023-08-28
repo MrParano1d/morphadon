@@ -10,13 +10,26 @@ import (
 
 type Context struct {
 	ctx context.Context
+
+	Language string
+	Title    string
+	BaseURL  string
+
+	BodyAttrs g.Node
+
+	Meta []map[string]string
 }
 
 var _ core.Context = (*Context)(nil)
 
 func NewContext() *Context {
 	return &Context{
-		ctx: context.Background(),
+		ctx:       context.Background(),
+		Language:  "en",
+		Title:     "",
+		BaseURL:   "/",
+		BodyAttrs: nil,
+		Meta:      make([]map[string]string, 0),
 	}
 }
 

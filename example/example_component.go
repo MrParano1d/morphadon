@@ -31,10 +31,11 @@ func (c *ExampleLayoutComponent) Assets() []core.Asset[*web.Context] {
 }
 
 func (c *ExampleLayoutComponent) Render(data core.SetupData) any {
+	c.Context().Title = "Example Page"
 	return c.Context().H(web.HTML(
-	Div(
-		Class("example-layout"),
-		web.MustRenderSlot("default", c),
-	),
+		Div(
+			Class("example-layout"),
+			web.MustRenderSlot("default", c),
+		),
 	))
 }

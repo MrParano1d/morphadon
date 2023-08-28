@@ -46,11 +46,27 @@ func (h *HTMLComponent) Render(data core.SetupData) any {
 		styles = append(styles, asset.TargetPath())
 	}
 
+	var title string
+	if h.Context().Title != "" {
+		title = h.Context().Title
+	} else {
+		title = "Marla//Engine powered website"
+	}
+
 	return c.HTML5(
 		c.HTML5Props{
-			Title:    "Marla One",
-			Language: "en",
+			Title:    title,
+			Language: h.Context().Language,
 			Head: []g.Node{
+				g.Group(g.Map(h.Context().Meta, func(meta map[string]string) g.Node {
+					attributes := make([]g.Node, 0, len(meta))
+					for k, v := range meta {
+						attributes = append(attributes, g.Attr(k, v))
+					}
+					return html.Meta(
+						g.Group(attributes),
+					)
+				})),
 				g.Group(g.Map(scripts, func(script string) g.Node {
 					return html.Script(
 						html.Src(script),
@@ -65,6 +81,7 @@ func (h *HTMLComponent) Render(data core.SetupData) any {
 				})),
 			},
 			Body: []g.Node{
+				h.Context().BodyAttrs,
 				h.Context().H(
 					MustRenderSlot("default", h),
 				),
