@@ -4,7 +4,6 @@ import (
 	"context"
 
 	g "github.com/maragudk/gomponents"
-	"github.com/marlaone/engine"
 	"github.com/marlaone/engine/core"
 )
 
@@ -41,10 +40,6 @@ func (c *Context) Context() context.Context {
 	return c.ctx
 }
 
-func (c *Context) Assets() []core.Asset[*Context] {
-	return engine.GetInstance[*Context]().AssetManager().Assets()
-}
-
-func (c *Context) ScopeAssets(scope core.Scope) []core.Asset[*Context] {
-	return engine.GetInstance[*Context]().AssetManager().ScopeAssets(scope)
+func (c *Context) SetContext(ctx context.Context) {
+	c.ctx = ctx
 }

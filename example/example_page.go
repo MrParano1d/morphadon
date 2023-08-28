@@ -9,6 +9,8 @@ import (
 	"github.com/marlaone/engine/web"
 )
 
+const ExamplePageScope core.Scope = "/example"
+
 type ExamplePage struct {
 	web.WebPage
 }
@@ -23,6 +25,14 @@ func (p *ExamplePage) Assets() []core.Asset[*web.Context] {
 	return []core.Asset[*web.Context]{
 		web.NewCSSAsset("example.css", core.ScopeGlobal),
 		web.NewJSAsset("example.ts", core.ScopeGlobal),
+		web.NewCSSAsset("example_button.css", ExamplePageScope),
+		web.NewJSAsset("example_button.ts", ExamplePageScope),
+	}
+}
+
+func (p *ExamplePage) Components() []core.Component[*web.Context] {
+	return []core.Component[*web.Context]{
+		ExampleLayout(),
 	}
 }
 

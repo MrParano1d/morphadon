@@ -61,7 +61,7 @@ func NewJSAsset(path string, scope ...core.Scope) *WebAsset {
 	if len(scope) > 0 {
 		s = scope[0]
 	} else {
-		s = core.ScopeNone
+		s = core.ScopeComponent
 	}
 	return NewWebAsset(path, core.AssetTypeJS, s)
 }
@@ -71,7 +71,7 @@ func NewCSSAsset(path string, scope ...core.Scope) *WebAsset {
 	if len(scope) > 0 {
 		s = scope[0]
 	} else {
-		s = core.ScopeGlobal
+		s = core.ScopeComponent
 	}
 	return NewWebAsset(path, core.AssetTypeCSS, s)
 }

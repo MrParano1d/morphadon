@@ -19,6 +19,6 @@ func NewExampleSystem() *ExampleSystem {
 
 func (s *ExampleSystem) Actions() []core.Action[*web.Context] {
 	return []core.Action[*web.Context]{
-		web.NewPageAction(web.OpHttpGet, "/example", NewExamplePage()),
+		web.NewPageAction(web.OpHttpGet, ExamplePageScope, NewExamplePage()),
 	}
 }

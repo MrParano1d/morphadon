@@ -221,6 +221,7 @@ func (a *AssetManager) transformJS(outputFile string, assets []core.Asset[*Conte
 }
 
 func (a *AssetManager) BuildCSS() error {
+
 	globalStylesheets, scopedStylesheets := a.filterGlobalAndScopedAssets(a.findAssetType(core.AssetTypeCSS))
 
 	if len(globalStylesheets) > 0 {

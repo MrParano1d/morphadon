@@ -60,6 +60,7 @@ func (p *MarlaHttpPresenter) actionHandler(action core.Action[*Context]) http.Ha
 			renderer = p.renderer
 		}
 		ctx := NewContext()
+
 		if err := renderer.Render(action.Execute(ctx), rw); err != nil {
 			rw.WriteHeader(http.StatusInternalServerError)
 			rw.Write([]byte(err.Error()))
@@ -68,12 +69,6 @@ func (p *MarlaHttpPresenter) actionHandler(action core.Action[*Context]) http.Ha
 }
 
 func (p *MarlaHttpPresenter) RegisterAction(action core.Action[*Context]) error {
-
-	for _, component := range action.Components() {
-		for _, componentAsset := range component.Assets() {
-			componentAsset.SetScope(action.Scope())
-		}
-	}
 
 	switch action.Operation() {
 	case OpHttpGet:

@@ -24,9 +24,12 @@ func ExampleLayout(children ...g.Node) *ExampleLayoutComponent {
 }
 
 func (c *ExampleLayoutComponent) Assets() []core.Asset[*web.Context] {
-	return []core.Asset[*web.Context]{
-		web.NewCSSAsset("example.css", core.ScopeGlobal),
-		web.NewJSAsset("example.ts", core.ScopeGlobal),
+	return []core.Asset[*web.Context]{}
+}
+
+func (c *ExampleLayoutComponent) Components() []core.Component[*web.Context] {
+	return []core.Component[*web.Context]{
+		web.HTML(),
 	}
 }
 

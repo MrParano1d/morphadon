@@ -40,14 +40,15 @@ func (a *PageAction) SetRenderer(core.Renderer[*Context]) {
 }
 
 func (a *PageAction) Components() []core.Component[*Context] {
-	return a.page.Components()
+	return []core.Component[*Context]{a.page}
 }
 
 func (a *PageAction) Assets() []core.Asset[*Context] {
-	return a.page.Assets()
+	return make([]core.Asset[*Context], 0)
 }
 
 func (a *PageAction) Execute(ctx *Context) any {
+	provideScope(ctx, a.scope)
 	return ctx.H(a.page)
 }
 

@@ -24,23 +24,29 @@ func HTML(children ...g.Node) *HTMLComponent {
 
 func (h *HTMLComponent) Render(data core.SetupData) any {
 
+	assets := useAssets()
+	pageScope := useScope(h.Context())
+
 	var scripts []string
-	for _, asset := range h.Context().Assets() {
+	for _, asset := range assets.All() {
+
 		if asset.Type() != core.AssetTypeJS {
 			continue
 		}
-		if asset.Scope() != core.ScopeGlobal {
+
+		if asset.Scope() != core.ScopeGlobal && asset.Scope() != core.ScopeMultiple && asset.Scope() != pageScope.Scope() {
 			continue
 		}
+
 		scripts = append(scripts, asset.TargetPath())
 	}
 
 	var styles []string
-	for _, asset := range h.Context().Assets() {
+	for _, asset := range assets.All() {
 		if asset.Type() != core.AssetTypeCSS {
 			continue
 		}
-		if asset.Scope() != core.ScopeGlobal {
+		if asset.Scope() != core.ScopeGlobal && asset.Scope() != core.ScopeMultiple && asset.Scope() != pageScope.Scope() {
 			continue
 		}
 		styles = append(styles, asset.TargetPath())
