@@ -1,6 +1,6 @@
 package web
 
-import "github.com/marlaone/morphadon/core"
+import "github.com/mrparano1d/morphadon/core"
 
 const (
 	OpHttpAny core.Operation = 1 << iota

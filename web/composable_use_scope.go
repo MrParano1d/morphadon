@@ -3,7 +3,7 @@ package web
 import (
 	"context"
 
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 type ScopeKey string

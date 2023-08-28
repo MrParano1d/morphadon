@@ -1,8 +1,8 @@
 package web
 
 import (
-	"github.com/marlaone/morphadon"
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 type useAssetsInstance struct {

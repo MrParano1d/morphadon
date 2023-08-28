@@ -11,7 +11,7 @@ import (
 	"strings"
 
 	"github.com/evanw/esbuild/pkg/api"
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 type ScopeGroupedAssets map[core.Scope][]core.Asset[*Context]

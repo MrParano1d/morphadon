@@ -3,7 +3,7 @@ package web
 import (
 	g "github.com/maragudk/gomponents"
 	"github.com/maragudk/gomponents/html"
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 type WebPlugin struct {

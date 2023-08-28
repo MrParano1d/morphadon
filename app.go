@@ -1,6 +1,6 @@
 package morphadon
 
-import "github.com/marlaone/morphadon/core"
+import "github.com/mrparano1d/morphadon/core"
 
 var app any
 

@@ -6,7 +6,7 @@ import (
 	"reflect"
 
 	g "github.com/maragudk/gomponents"
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 func h(c any, ctx *Context) g.Node {

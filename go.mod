@@ -1,4 +1,4 @@
-module github.com/marlaone/morphadon
+module github.com/mrparano1d/morphadon
 
 go 1.21
 

@@ -3,8 +3,8 @@ package main
 import (
 	g "github.com/maragudk/gomponents"
 	. "github.com/maragudk/gomponents/html"
-	"github.com/marlaone/morphadon/core"
-	"github.com/marlaone/morphadon/web"
+	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon/web"
 )
 
 type ExampleLayoutComponent struct {

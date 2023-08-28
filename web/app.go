@@ -1,8 +1,8 @@
 package web
 
 import (
-	morphadon "github.com/marlaone/morphadon"
-	"github.com/marlaone/morphadon/core"
+	morphadon "github.com/mrparano1d/morphadon"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 func CreateWebApp() core.App[*Context] {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 type BytesRenderer struct {

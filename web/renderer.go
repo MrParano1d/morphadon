@@ -6,7 +6,7 @@ import (
 	"log"
 
 	g "github.com/maragudk/gomponents"
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon/core"
 )
 
 type WebRenderer struct {

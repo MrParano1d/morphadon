@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/marlaone/morphadon/core"
+	"github.com/mrparano1d/morphadon/core"
 
 	g "github.com/maragudk/gomponents"
 	c "github.com/maragudk/gomponents/components"
