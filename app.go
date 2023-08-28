@@ -1,4 +1,4 @@
-package engine
+package morphadon
 
 import "github.com/marlaone/morphadon/core"
 

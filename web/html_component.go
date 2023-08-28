@@ -56,7 +56,7 @@ func (h *HTMLComponent) Render(data core.SetupData) any {
 	if h.Context().Title != "" {
 		title = h.Context().Title
 	} else {
-		title = "Marla//Engine powered website"
+		title = "Marla//Morphadon powered website"
 	}
 
 	return c.HTML5(
