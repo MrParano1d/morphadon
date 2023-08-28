@@ -1,4 +1,4 @@
-package core
+package morphadon
 
 type Properties map[string]any
 

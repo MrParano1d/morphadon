@@ -6,19 +6,19 @@ import (
 	"log"
 
 	g "github.com/maragudk/gomponents"
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 )
 
 type WebRenderer struct {
 }
 
-var _ core.Renderer[*Context] = &WebRenderer{}
+var _ morphadon.Renderer[*Context] = &WebRenderer{}
 
 func NewWebRenderer() *WebRenderer {
 	return &WebRenderer{}
 }
 
-func (r *WebRenderer) Init(core.App[*Context]) error {
+func (r *WebRenderer) Init(morphadon.App[*Context]) error {
 	return nil
 }
 

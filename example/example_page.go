@@ -5,11 +5,11 @@ import (
 
 	g "github.com/maragudk/gomponents"
 	. "github.com/maragudk/gomponents/html"
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 	"github.com/mrparano1d/morphadon/web"
 )
 
-const ExamplePageScope core.Scope = "/example"
+const ExamplePageScope morphadon.Scope = "/example"
 
 type ExamplePage struct {
 	web.WebPage
@@ -21,28 +21,28 @@ func NewExamplePage() *ExamplePage {
 	}
 }
 
-func (p *ExamplePage) Assets() []core.Asset[*web.Context] {
-	return []core.Asset[*web.Context]{
-		web.NewCSSAsset("example.css", core.ScopeGlobal),
-		web.NewJSAsset("example.ts", core.ScopeGlobal),
+func (p *ExamplePage) Assets() []morphadon.Asset[*web.Context] {
+	return []morphadon.Asset[*web.Context]{
+		web.NewCSSAsset("example.css", morphadon.ScopeGlobal),
+		web.NewJSAsset("example.ts", morphadon.ScopeGlobal),
 		web.NewCSSAsset("example_button.css", ExamplePageScope),
 		web.NewJSAsset("example_button.ts", ExamplePageScope),
 	}
 }
 
-func (p *ExamplePage) Components() []core.Component[*web.Context] {
-	return []core.Component[*web.Context]{
+func (p *ExamplePage) Components() []morphadon.Component[*web.Context] {
+	return []morphadon.Component[*web.Context]{
 		ExampleLayout(),
 	}
 }
 
-func (p *ExamplePage) Setup() core.SetupData {
-	return core.SetupData{
+func (p *ExamplePage) Setup() morphadon.SetupData {
+	return morphadon.SetupData{
 		"greeting": "example",
 	}
 }
 
-func (p *ExamplePage) Render(data core.SetupData) any {
+func (p *ExamplePage) Render(data morphadon.SetupData) any {
 	return p.Context().H(
 		ExampleLayout(
 			H1(

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	g "github.com/maragudk/gomponents"
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 )
 
 type Context struct {
@@ -19,7 +19,7 @@ type Context struct {
 	Meta []map[string]string
 }
 
-var _ core.Context = (*Context)(nil)
+var _ morphadon.Context = (*Context)(nil)
 
 func NewContext() *Context {
 	return &Context{

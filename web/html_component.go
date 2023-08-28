@@ -1,28 +1,27 @@
 package web
 
 import (
-	"github.com/mrparano1d/morphadon/core"
-
 	g "github.com/maragudk/gomponents"
 	c "github.com/maragudk/gomponents/components"
 	html "github.com/maragudk/gomponents/html"
+	"github.com/mrparano1d/morphadon"
 )
 
 type HTMLComponent struct {
-	*core.DefaultComponent[*Context]
+	*morphadon.DefaultComponent[*Context]
 }
 
-var _ core.Component[*Context] = (*HTMLComponent)(nil)
+var _ morphadon.Component[*Context] = (*HTMLComponent)(nil)
 
 func HTML(children ...g.Node) *HTMLComponent {
 	return &HTMLComponent{
-		DefaultComponent: core.NewDefaultComponentWithSlots[*Context](core.Slots{
+		DefaultComponent: morphadon.NewDefaultComponentWithSlots[*Context](morphadon.Slots{
 			"default": children,
 		}),
 	}
 }
 
-func (h *HTMLComponent) Render(data core.SetupData) any {
+func (h *HTMLComponent) Render(data morphadon.SetupData) any {
 
 	assets := useAssets()
 	pageScope := useScope(h.Context())
@@ -30,11 +29,11 @@ func (h *HTMLComponent) Render(data core.SetupData) any {
 	var scripts []string
 	for _, asset := range assets.All() {
 
-		if asset.Type() != core.AssetTypeJS {
+		if asset.Type() != morphadon.AssetTypeJS {
 			continue
 		}
 
-		if asset.Scope() != core.ScopeGlobal && asset.Scope() != core.ScopeMultiple && asset.Scope() != pageScope.Scope() {
+		if asset.Scope() != morphadon.ScopeGlobal && asset.Scope() != morphadon.ScopeMultiple && asset.Scope() != pageScope.Scope() {
 			continue
 		}
 
@@ -43,10 +42,10 @@ func (h *HTMLComponent) Render(data core.SetupData) any {
 
 	var styles []string
 	for _, asset := range assets.All() {
-		if asset.Type() != core.AssetTypeCSS {
+		if asset.Type() != morphadon.AssetTypeCSS {
 			continue
 		}
-		if asset.Scope() != core.ScopeGlobal && asset.Scope() != core.ScopeMultiple && asset.Scope() != pageScope.Scope() {
+		if asset.Scope() != morphadon.ScopeGlobal && asset.Scope() != morphadon.ScopeMultiple && asset.Scope() != pageScope.Scope() {
 			continue
 		}
 		styles = append(styles, asset.TargetPath())

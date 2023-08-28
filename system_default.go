@@ -1,4 +1,4 @@
-package core
+package morphadon
 
 type DefaultSystem[C Context] struct {
 	ctx C

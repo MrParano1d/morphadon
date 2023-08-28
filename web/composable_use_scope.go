@@ -3,7 +3,7 @@ package web
 import (
 	"context"
 
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 )
 
 type ScopeKey string
@@ -13,14 +13,14 @@ const (
 )
 
 type scopeInstance struct {
-	scope core.Scope
+	scope morphadon.Scope
 }
 
-func (s *scopeInstance) Scope() core.Scope {
+func (s *scopeInstance) Scope() morphadon.Scope {
 	return s.scope
 }
 
-func provideScope(ctx *Context, scope core.Scope) {
+func provideScope(ctx *Context, scope morphadon.Scope) {
 	ctx.SetContext(
 		context.WithValue(ctx.Context(), ScopeSymbol, &scopeInstance{
 			scope: scope,

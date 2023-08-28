@@ -1,18 +1,16 @@
 package web
 
-import (
-	"github.com/mrparano1d/morphadon/core"
-)
+import "github.com/mrparano1d/morphadon"
 
 type PageAction struct {
-	operation core.Operation
-	scope     core.Scope
+	operation morphadon.Operation
+	scope     morphadon.Scope
 	page      WebPage
 }
 
-var _ core.Action[*Context] = (*PageAction)(nil)
+var _ morphadon.Action[*Context] = (*PageAction)(nil)
 
-func NewPageAction(operation core.Operation, scope core.Scope, page WebPage) *PageAction {
+func NewPageAction(operation morphadon.Operation, scope morphadon.Scope, page WebPage) *PageAction {
 	return &PageAction{
 		operation: operation,
 		scope:     scope,
@@ -20,31 +18,31 @@ func NewPageAction(operation core.Operation, scope core.Scope, page WebPage) *Pa
 	}
 }
 
-func (a *PageAction) Init(core.App[*Context]) error {
+func (a *PageAction) Init(morphadon.App[*Context]) error {
 	return nil
 }
 
-func (a *PageAction) Operation() core.Operation {
+func (a *PageAction) Operation() morphadon.Operation {
 	return a.operation
 }
 
-func (a *PageAction) Scope() core.Scope {
+func (a *PageAction) Scope() morphadon.Scope {
 	return a.scope
 }
 
-func (a *PageAction) Renderer() core.Renderer[*Context] {
+func (a *PageAction) Renderer() morphadon.Renderer[*Context] {
 	return nil
 }
 
-func (a *PageAction) SetRenderer(core.Renderer[*Context]) {
+func (a *PageAction) SetRenderer(morphadon.Renderer[*Context]) {
 }
 
-func (a *PageAction) Components() []core.Component[*Context] {
-	return []core.Component[*Context]{a.page}
+func (a *PageAction) Components() []morphadon.Component[*Context] {
+	return []morphadon.Component[*Context]{a.page}
 }
 
-func (a *PageAction) Assets() []core.Asset[*Context] {
-	return make([]core.Asset[*Context], 0)
+func (a *PageAction) Assets() []morphadon.Asset[*Context] {
+	return make([]morphadon.Asset[*Context], 0)
 }
 
 func (a *PageAction) Execute(ctx *Context) any {
@@ -53,17 +51,17 @@ func (a *PageAction) Execute(ctx *Context) any {
 }
 
 type WebPage interface {
-	core.Component[*Context]
+	morphadon.Component[*Context]
 }
 
 type DefaultWebPage struct {
-	*core.DefaultComponent[*Context]
+	*morphadon.DefaultComponent[*Context]
 }
 
-var _ core.Component[*Context] = (*DefaultWebPage)(nil)
+var _ morphadon.Component[*Context] = (*DefaultWebPage)(nil)
 
 func NewWebPage() WebPage {
 	return &DefaultWebPage{
-		DefaultComponent: core.NewDefaultComponent[*Context](),
+		DefaultComponent: morphadon.NewDefaultComponent[*Context](),
 	}
 }

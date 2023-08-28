@@ -1,4 +1,4 @@
-package core
+package morphadon
 
 type Presenter[C Context] interface {
 	Init(App[C]) error

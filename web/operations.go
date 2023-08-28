@@ -1,9 +1,9 @@
 package web
 
-import "github.com/mrparano1d/morphadon/core"
+import "github.com/mrparano1d/morphadon"
 
 const (
-	OpHttpAny core.Operation = 1 << iota
+	OpHttpAny morphadon.Operation = 1 << iota
 	OpHttpGet
 	OpHttpPost
 	OpHttpPut

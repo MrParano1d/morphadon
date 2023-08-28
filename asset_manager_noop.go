@@ -1,4 +1,4 @@
-package core
+package morphadon
 
 type AssetManagerNoop[C Context] struct {
 }

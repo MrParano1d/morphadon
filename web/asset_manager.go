@@ -11,10 +11,10 @@ import (
 	"strings"
 
 	"github.com/evanw/esbuild/pkg/api"
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 )
 
-type ScopeGroupedAssets map[core.Scope][]core.Asset[*Context]
+type ScopeGroupedAssets map[morphadon.Scope][]morphadon.Asset[*Context]
 
 type AssetManagerConfig struct {
 	outputDir string
@@ -27,29 +27,29 @@ func NewDefaultAssetManagerConfig() *AssetManagerConfig {
 }
 
 type AssetManager struct {
-	*core.AssetManagerDefault[*Context]
+	*morphadon.AssetManagerDefault[*Context]
 
 	config *AssetManagerConfig
 }
 
-var _ core.AssetManager[*Context] = (*AssetManager)(nil)
+var _ morphadon.AssetManager[*Context] = (*AssetManager)(nil)
 
 func NewAssetManager() *AssetManager {
 	return &AssetManager{
-		AssetManagerDefault: core.NewAssetManagerDefault[*Context](),
+		AssetManagerDefault: morphadon.NewAssetManagerDefault[*Context](),
 		config:              NewDefaultAssetManagerConfig(),
 	}
 }
 
 func NewAssetManagerWithConfig(config *AssetManagerConfig) *AssetManager {
 	return &AssetManager{
-		AssetManagerDefault: core.NewAssetManagerDefault[*Context](),
+		AssetManagerDefault: morphadon.NewAssetManagerDefault[*Context](),
 		config:              config,
 	}
 }
 
-func (a *AssetManager) findAssetType(assetTypes ...core.AssetType) []core.Asset[*Context] {
-	var assets []core.Asset[*Context]
+func (a *AssetManager) findAssetType(assetTypes ...morphadon.AssetType) []morphadon.Asset[*Context] {
+	var assets []morphadon.Asset[*Context]
 	for _, asset := range a.Assets() {
 		if slices.Contains(assetTypes, asset.Type()) {
 			assets = append(assets, asset)
@@ -58,12 +58,12 @@ func (a *AssetManager) findAssetType(assetTypes ...core.AssetType) []core.Asset[
 	return assets
 }
 
-func (a *AssetManager) filterGlobalAndScopedAssets(assets []core.Asset[*Context]) ([]core.Asset[*Context], ScopeGroupedAssets) {
-	var globalAssets []core.Asset[*Context]
-	scopedAssets := make([]core.Asset[*Context], 0, len(assets))
+func (a *AssetManager) filterGlobalAndScopedAssets(assets []morphadon.Asset[*Context]) ([]morphadon.Asset[*Context], ScopeGroupedAssets) {
+	var globalAssets []morphadon.Asset[*Context]
+	scopedAssets := make([]morphadon.Asset[*Context], 0, len(assets))
 
 	for _, asset := range assets {
-		if asset.Scope() == core.ScopeGlobal || asset.Scope() == core.ScopeMultiple {
+		if asset.Scope() == morphadon.ScopeGlobal || asset.Scope() == morphadon.ScopeMultiple {
 			globalAssets = append(globalAssets, asset)
 			continue
 		}
@@ -81,7 +81,7 @@ func (a *AssetManager) filterGlobalAndScopedAssets(assets []core.Asset[*Context]
 
 	for _, asset := range scopedAssets {
 		if _, ok := scopeGroupedAssets[asset.Scope()]; !ok {
-			scopeGroupedAssets[asset.Scope()] = make([]core.Asset[*Context], 0)
+			scopeGroupedAssets[asset.Scope()] = make([]morphadon.Asset[*Context], 0)
 		}
 		scopeGroupedAssets[asset.Scope()] = append(scopeGroupedAssets[asset.Scope()], asset)
 	}
@@ -89,7 +89,7 @@ func (a *AssetManager) filterGlobalAndScopedAssets(assets []core.Asset[*Context]
 	return globalAssets, scopeGroupedAssets
 }
 
-func (a *AssetManager) transformCSS(outputFile string, assets []core.Asset[*Context]) error {
+func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[*Context]) error {
 
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -165,7 +165,7 @@ func (a *AssetManager) transformCSS(outputFile string, assets []core.Asset[*Cont
 	return nil
 }
 
-func (a *AssetManager) transformJS(outputFile string, assets []core.Asset[*Context]) error {
+func (a *AssetManager) transformJS(outputFile string, assets []morphadon.Asset[*Context]) error {
 
 	cwd, err := os.Getwd()
 	if err != nil {
@@ -222,7 +222,7 @@ func (a *AssetManager) transformJS(outputFile string, assets []core.Asset[*Conte
 
 func (a *AssetManager) BuildCSS() error {
 
-	globalStylesheets, scopedStylesheets := a.filterGlobalAndScopedAssets(a.findAssetType(core.AssetTypeCSS))
+	globalStylesheets, scopedStylesheets := a.filterGlobalAndScopedAssets(a.findAssetType(morphadon.AssetTypeCSS))
 
 	if len(globalStylesheets) > 0 {
 		if err := a.transformCSS("global.css", globalStylesheets); err != nil {
@@ -241,7 +241,7 @@ func (a *AssetManager) BuildCSS() error {
 
 func (a *AssetManager) BuildJS() error {
 
-	globalScripts, scopedScripts := a.filterGlobalAndScopedAssets(a.findAssetType(core.AssetTypeJS))
+	globalScripts, scopedScripts := a.filterGlobalAndScopedAssets(a.findAssetType(morphadon.AssetTypeJS))
 
 	if len(globalScripts) > 0 {
 		// build global js
@@ -286,7 +286,7 @@ func (a *AssetManager) Build() error {
 		return fmt.Errorf("failed to build js: %w", err)
 	}
 
-	// globalImages, scopedImages := a.filterGlobalAndScopedAssets(a.findAssetType(core.AssetTypePNG, core.AssetTypeJPG, core.AssetTypeGIF, core.AssetTypeSVG))
+	// globalImages, scopedImages := a.filterGlobalAndScopedAssets(a.findAssetType(morphadon.AssetTypePNG, morphadon.AssetTypeJPG, morphadon.AssetTypeGIF, morphadon.AssetTypeSVG))
 
 	return nil
 }

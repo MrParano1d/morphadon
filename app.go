@@ -1,22 +1,20 @@
 package morphadon
 
-import "github.com/mrparano1d/morphadon/core"
-
 var app any
 
-func GetInstance[C core.Context]() core.App[C] {
+func GetInstance[C Context]() App[C] {
 	if app == nil {
 		panic("App not initialized")
 	}
-	return app.(core.App[C])
+	return app.(App[C])
 }
 
-func CreateApp[C core.Context]() core.App[C] {
-	app = core.NewDefaultApp[C]()
-	return app.(core.App[C])
+func CreateApp[C Context]() App[C] {
+	app = NewDefaultApp[C]()
+	return app.(App[C])
 }
 
-func DefineComponent[C core.Context](c core.Component[C]) core.Component[C] {
+func DefineComponent[C Context](c Component[C]) Component[C] {
 	app := GetInstance[C]()
 	app.RegisterComponent(c)
 	return c

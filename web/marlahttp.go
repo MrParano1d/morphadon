@@ -10,17 +10,17 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 )
 
 type MarlaHttpPresenter struct {
-	app core.App[*Context]
+	app morphadon.App[*Context]
 
 	router   *chi.Mux
-	renderer core.Renderer[*Context]
+	renderer morphadon.Renderer[*Context]
 }
 
-var _ core.Presenter[*Context] = &MarlaHttpPresenter{}
+var _ morphadon.Presenter[*Context] = &MarlaHttpPresenter{}
 
 func NewHttpPresenter() *MarlaHttpPresenter {
 	r := chi.NewRouter()
@@ -38,22 +38,22 @@ func NewHttpPresenter() *MarlaHttpPresenter {
 	}
 }
 
-func (p *MarlaHttpPresenter) Init(app core.App[*Context]) error {
+func (p *MarlaHttpPresenter) Init(app morphadon.App[*Context]) error {
 	p.app = app
 	return nil
 }
 
-func (p *MarlaHttpPresenter) Renderer() core.Renderer[*Context] {
+func (p *MarlaHttpPresenter) Renderer() morphadon.Renderer[*Context] {
 	return p.renderer
 }
 
-func (p *MarlaHttpPresenter) SetRenderer(r core.Renderer[*Context]) {
+func (p *MarlaHttpPresenter) SetRenderer(r morphadon.Renderer[*Context]) {
 	p.renderer = r
 }
 
-func (p *MarlaHttpPresenter) actionHandler(action core.Action[*Context]) http.HandlerFunc {
+func (p *MarlaHttpPresenter) actionHandler(action morphadon.Action[*Context]) http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
-		var renderer core.Renderer[*Context]
+		var renderer morphadon.Renderer[*Context]
 		if action.Renderer() != nil {
 			renderer = action.Renderer()
 		} else {
@@ -68,7 +68,7 @@ func (p *MarlaHttpPresenter) actionHandler(action core.Action[*Context]) http.Ha
 	}
 }
 
-func (p *MarlaHttpPresenter) RegisterAction(action core.Action[*Context]) error {
+func (p *MarlaHttpPresenter) RegisterAction(action morphadon.Action[*Context]) error {
 
 	switch action.Operation() {
 	case OpHttpGet:

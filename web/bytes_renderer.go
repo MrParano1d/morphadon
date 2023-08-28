@@ -4,19 +4,19 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 )
 
 type BytesRenderer struct {
 }
 
-var _ core.Renderer[*Context] = &BytesRenderer{}
+var _ morphadon.Renderer[*Context] = &BytesRenderer{}
 
 func NewBytesRenderer() *BytesRenderer {
 	return &BytesRenderer{}
 }
 
-func (r *BytesRenderer) Init(app core.App[*Context]) error {
+func (r *BytesRenderer) Init(app morphadon.App[*Context]) error {
 	return nil
 }
 

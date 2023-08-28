@@ -3,19 +3,19 @@ package web
 import (
 	"fmt"
 
-	"github.com/mrparano1d/morphadon/core"
+	"github.com/mrparano1d/morphadon"
 )
 
 type WebAsset struct {
 	path       string
 	targetPath string
-	assetType  core.AssetType
-	scope      core.Scope
+	assetType  morphadon.AssetType
+	scope      morphadon.Scope
 }
 
-var _ core.Asset[*Context] = (*WebAsset)(nil)
+var _ morphadon.Asset[*Context] = (*WebAsset)(nil)
 
-func NewWebAsset(path string, assetType core.AssetType, scope core.Scope) *WebAsset {
+func NewWebAsset(path string, assetType morphadon.AssetType, scope morphadon.Scope) *WebAsset {
 	return &WebAsset{
 		path:       path,
 		targetPath: "",
@@ -24,7 +24,7 @@ func NewWebAsset(path string, assetType core.AssetType, scope core.Scope) *WebAs
 	}
 }
 
-func (a *WebAsset) Init(app core.App[*Context]) error {
+func (a *WebAsset) Init(app morphadon.App[*Context]) error {
 	return nil
 }
 
@@ -44,45 +44,45 @@ func (a *WebAsset) SetTargetPath(targetPath string) {
 	a.targetPath = targetPath
 }
 
-func (a *WebAsset) Type() core.AssetType {
+func (a *WebAsset) Type() morphadon.AssetType {
 	return a.assetType
 }
 
-func (a *WebAsset) Scope() core.Scope {
+func (a *WebAsset) Scope() morphadon.Scope {
 	return a.scope
 }
 
-func (a *WebAsset) SetScope(scope core.Scope) {
+func (a *WebAsset) SetScope(scope morphadon.Scope) {
 	a.scope = scope
 }
 
-func NewJSAsset(path string, scope ...core.Scope) *WebAsset {
-	var s core.Scope
+func NewJSAsset(path string, scope ...morphadon.Scope) *WebAsset {
+	var s morphadon.Scope
 	if len(scope) > 0 {
 		s = scope[0]
 	} else {
-		s = core.ScopeComponent
+		s = morphadon.ScopeComponent
 	}
-	return NewWebAsset(path, core.AssetTypeJS, s)
+	return NewWebAsset(path, morphadon.AssetTypeJS, s)
 }
 
-func NewCSSAsset(path string, scope ...core.Scope) *WebAsset {
-	var s core.Scope
+func NewCSSAsset(path string, scope ...morphadon.Scope) *WebAsset {
+	var s morphadon.Scope
 	if len(scope) > 0 {
 		s = scope[0]
 	} else {
-		s = core.ScopeComponent
+		s = morphadon.ScopeComponent
 	}
-	return NewWebAsset(path, core.AssetTypeCSS, s)
+	return NewWebAsset(path, morphadon.AssetTypeCSS, s)
 }
 
-func NewImageAsset(path string, assetType core.AssetType, scope ...core.Scope) *WebAsset {
-	if core.IsImageAssetType(assetType) {
-		var s core.Scope
+func NewImageAsset(path string, assetType morphadon.AssetType, scope ...morphadon.Scope) *WebAsset {
+	if morphadon.IsImageAssetType(assetType) {
+		var s morphadon.Scope
 		if len(scope) > 0 {
 			s = scope[0]
 		} else {
-			s = core.ScopeGlobal
+			s = morphadon.ScopeGlobal
 		}
 		return NewWebAsset(path, assetType, s)
 	}
