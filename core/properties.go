@@ -1,6 +1,6 @@
-package engine
+package core
 
-type Properties map[string]interface{}
+type Properties map[string]any
 
 func PropStr(propName string, props Properties) string {
 	return PropStrWithDefault(propName, props, "")

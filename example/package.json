@@ -1,0 +1,12 @@
+{
+  "name": "@engine/example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:marlaone/engine.git",
+  "author": "MrParano1d <jp.s@live.de>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "tailwindcss": "^3.3.3"
+  }
+}
