@@ -13,6 +13,8 @@ import (
 	"github.com/mrparano1d/morphadon"
 )
 
+type MarlaHttpPresenterOption func(*MarlaHttpPresenter)
+
 type MarlaHttpPresenter struct {
 	app morphadon.App[*Context]
 
@@ -22,7 +24,7 @@ type MarlaHttpPresenter struct {
 
 var _ morphadon.Presenter[*Context] = &MarlaHttpPresenter{}
 
-func NewHttpPresenter() *MarlaHttpPresenter {
+func NewHttpPresenter(opts ...MarlaHttpPresenterOption) *MarlaHttpPresenter {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -32,10 +34,16 @@ func NewHttpPresenter() *MarlaHttpPresenter {
 	filesDir := http.Dir(filepath.Join(workDir, "public"))
 	FileServer(r, "/public", filesDir)
 
-	return &MarlaHttpPresenter{
+	presenter := &MarlaHttpPresenter{
 		router:   r,
 		renderer: NewBytesRenderer(),
 	}
+
+	for _, opt := range opts {
+		opt(presenter)
+	}
+
+	return presenter
 }
 
 func (p *MarlaHttpPresenter) Init(app morphadon.App[*Context]) error {

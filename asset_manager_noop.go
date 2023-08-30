@@ -13,6 +13,13 @@ func (a *AssetManagerNoop[C]) Init(App[C]) error {
 	return nil
 }
 
+func (a *AssetManagerNoop[C]) SetSrcDir(string)  {
+}
+
+func (a *AssetManagerNoop[C]) SrcDir() string {
+	return ""
+}
+
 func (a *AssetManagerNoop[C]) RegisterAsset(asset Asset[C]) error {
 	return nil
 }

@@ -55,5 +55,8 @@ type AssetManager[C Context] interface {
 
 	Assets() []Asset[C]
 
+	SrcDir() string
+	SetSrcDir(string)
+
 	Build() error
 }

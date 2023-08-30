@@ -7,6 +7,8 @@ import (
 
 type AssetManagerDefault[C Context] struct {
 	assets []Asset[C]
+
+	srcDir string
 }
 
 var _ AssetManager[*TodoContext] = (*AssetManagerDefault[*TodoContext])(nil)
@@ -14,11 +16,24 @@ var _ AssetManager[*TodoContext] = (*AssetManagerDefault[*TodoContext])(nil)
 func NewAssetManagerDefault[C Context]() *AssetManagerDefault[C] {
 	return &AssetManagerDefault[C]{
 		assets: make([]Asset[C], 0),
+		srcDir: ".",
 	}
 }
 
 func (a *AssetManagerDefault[C]) Init(app App[C]) error {
 	return nil
+}
+
+func (a *AssetManagerDefault[C]) SrcDir() string {
+	return a.srcDir
+}
+
+func (a *AssetManagerDefault[C]) SetSrcDir(srcDir string) {
+	a.srcDir = srcDir
+}
+
+func (a *AssetManagerDefault[C]) getAssetFilePath(asset Asset[C]) string {
+	return filepath.Join(a.srcDir, asset.Path())
 }
 
 func (a *AssetManagerDefault[C]) RegisterAsset(asset Asset[C]) error {
@@ -36,8 +51,8 @@ func (a *AssetManagerDefault[C]) RegisterAsset(asset Asset[C]) error {
 		}
 
 		// check if asset is a file
-		abs1, _ := filepath.Abs(registeredAsset.Path())
-		abs2, _ := filepath.Abs(asset.Path())
+		abs1, _ := filepath.Abs(a.getAssetFilePath(registeredAsset))
+		abs2, _ := filepath.Abs(a.getAssetFilePath(asset))
 		if abs1 == abs2 {
 			exists = true
 			registeredAsset.SetScope(ScopeMultiple)
@@ -50,7 +65,7 @@ func (a *AssetManagerDefault[C]) RegisterAsset(asset Asset[C]) error {
 		if url1 != nil {
 			asset.SetPath(url1.String())
 		} else {
-			abs, _ := filepath.Abs(asset.Path())
+			abs, _ := filepath.Abs(a.getAssetFilePath(asset))
 			asset.SetPath(abs)
 		}
 		a.assets = append(a.assets, asset)

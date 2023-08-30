@@ -9,7 +9,6 @@ import (
 
 type Context struct {
 	ctx context.Context
-
 	Language string
 	Title    string
 	BaseURL  string
@@ -21,8 +20,9 @@ type Context struct {
 
 var _ morphadon.Context = (*Context)(nil)
 
-func NewContext() *Context {
-	return &Context{
+type ContextOption = func(c *Context)
+func NewContext(opts ...ContextOption) *Context {
+	ctx :=  &Context{
 		ctx:       context.Background(),
 		Language:  "en",
 		Title:     "",
@@ -30,6 +30,12 @@ func NewContext() *Context {
 		BodyAttrs: nil,
 		Meta:      make([]map[string]string, 0),
 	}
+
+	for _, opt := range opts {
+		opt(ctx)
+	}
+
+	return ctx
 }
 
 func (c *Context) H(n any) g.Node {

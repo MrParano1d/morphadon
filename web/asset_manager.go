@@ -17,12 +17,14 @@ import (
 type ScopeGroupedAssets map[morphadon.Scope][]morphadon.Asset[*Context]
 
 type AssetManagerConfig struct {
-	outputDir string
+	SrcDir    string
+	OutputDir string
 }
 
 func NewDefaultAssetManagerConfig() *AssetManagerConfig {
 	return &AssetManagerConfig{
-		outputDir: "public",
+		SrcDir:    ".",
+		OutputDir: "public",
 	}
 }
 
@@ -42,10 +44,17 @@ func NewAssetManager() *AssetManager {
 }
 
 func NewAssetManagerWithConfig(config *AssetManagerConfig) *AssetManager {
-	return &AssetManager{
+	if config == nil {
+		config = NewDefaultAssetManagerConfig()
+	}
+	assetManager := &AssetManager{
 		AssetManagerDefault: morphadon.NewAssetManagerDefault[*Context](),
 		config:              config,
 	}
+
+	assetManager.SetSrcDir(config.SrcDir)
+
+	return assetManager
 }
 
 func (a *AssetManager) findAssetType(assetTypes ...morphadon.AssetType) []morphadon.Asset[*Context] {
@@ -106,7 +115,7 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 		tmpFile := strings.TrimSuffix(filepath.Base(file), filepath.Ext(file)) + "." + getMD5Hash(file)[0:7] + ".css"
 
 		// write tmp file
-		command := exec.Command("npx", "tailwindcss", "-i", file, "-o", filepath.Join(a.config.outputDir, tmpFile))
+		command := exec.Command("npx", "tailwindcss", "-i", file, "-o", filepath.Join(a.config.OutputDir, tmpFile))
 		command.Stdin = os.Stdin
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr
@@ -114,8 +123,8 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 		if err != nil {
 			return fmt.Errorf("failed to transform css %s: %w", file, err)
 		}
-		entryPoints[i] = filepath.Join(a.config.outputDir, tmpFile)
-		asset.SetTargetPath(filepath.Join(a.config.outputDir, outputFile))
+		entryPoints[i] = filepath.Join(a.config.OutputDir, tmpFile)
+		asset.SetTargetPath(filepath.Join(a.config.OutputDir, outputFile))
 	}
 
 	stylesheets := make([]string, len(entryPoints))
@@ -136,7 +145,7 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 		MinifySyntax:      true,
 		MinifyIdentifiers: true,
 		Write:             true,
-		Outfile:           filepath.Join(a.config.outputDir, outputFile),
+		Outfile:           filepath.Join(a.config.OutputDir, outputFile),
 		Loader: map[string]api.Loader{
 			".css": api.LoaderCSS,
 			".ttf": api.LoaderFile,
@@ -175,7 +184,7 @@ func (a *AssetManager) transformJS(outputFile string, assets []morphadon.Asset[*
 	scripts := make([]string, len(assets))
 	for i, asset := range assets {
 		scripts[i] = fmt.Sprintf("import \"%s\";", asset.Path())
-		asset.SetTargetPath(filepath.Join(a.config.outputDir, outputFile))
+		asset.SetTargetPath(filepath.Join(a.config.OutputDir, outputFile))
 	}
 
 	ctx, err := api.Context(api.BuildOptions{
@@ -199,7 +208,7 @@ func (a *AssetManager) transformJS(outputFile string, assets []morphadon.Asset[*
 		MinifyIdentifiers: true,
 		Bundle:            true,
 		Write:             true,
-		Outfile:           filepath.Join(a.config.outputDir, outputFile),
+		Outfile:           filepath.Join(a.config.OutputDir, outputFile),
 	})
 
 	js := ctx.Rebuild()
@@ -263,14 +272,14 @@ func (a *AssetManager) BuildJS() error {
 func (a *AssetManager) Build() error {
 
 	// remove output dir
-	err := os.RemoveAll(a.config.outputDir)
+	err := os.RemoveAll(a.config.OutputDir)
 	if err != nil {
 		return fmt.Errorf("failed to remove output dir: %w", err)
 	}
 
 	// create output dir if not exists
-	if _, err := os.Stat(a.config.outputDir); os.IsNotExist(err) {
-		err := os.Mkdir(a.config.outputDir, 0755)
+	if _, err := os.Stat(a.config.OutputDir); os.IsNotExist(err) {
+		err := os.Mkdir(a.config.OutputDir, 0755)
 		if err != nil {
 			return fmt.Errorf("failed to create output dir: %w", err)
 		}
