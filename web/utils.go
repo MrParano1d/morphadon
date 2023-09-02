@@ -43,3 +43,14 @@ func RenderSlot(slotName string, c morphadon.Component[*Context]) (g.Node, error
 	}
 	return nil, fmt.Errorf("invalid slot type: %v", reflect.ValueOf(slot).Type())
 }
+
+func ImageSrc(src string) string {
+	app := morphadon.GetInstance[*Context]()
+
+	webAssetManager, ok := app.AssetManager().(*AssetManager)
+	if !ok {
+		panic("asset manager is not a web.AssetManager")
+	}
+
+	return webAssetManager.AssetPathToBuiltPath(src)
+}

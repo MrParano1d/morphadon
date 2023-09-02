@@ -27,6 +27,7 @@ func (p *ExamplePage) Assets() []morphadon.Asset[*web.Context] {
 		web.NewJSAsset("example.ts", morphadon.ScopeGlobal),
 		web.NewCSSAsset("example_button.css", ExamplePageScope),
 		web.NewJSAsset("example_button.ts", ExamplePageScope),
+		web.NewImageAsset("images/example.jpg"),
 	}
 }
 
@@ -48,6 +49,9 @@ func (p *ExamplePage) Render(data morphadon.SetupData) any {
 			H1(
 				Class("text-blue-600"),
 				g.Text(fmt.Sprintf("Hello %s", data["greeting"])),
+			),
+			Img(
+				Src(web.ImageSrc("images/example.jpg")),
 			),
 		),
 	)

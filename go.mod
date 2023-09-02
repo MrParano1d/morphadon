@@ -8,4 +8,7 @@ require (
 	github.com/maragudk/gomponents v0.20.1
 )
 
-require golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
+require (
+	github.com/chai2010/webp v1.1.1 // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
+)

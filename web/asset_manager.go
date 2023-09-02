@@ -1,15 +1,21 @@
 package web
 
 import (
+	"bytes"
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"image"
+	"image/gif"
+	"image/jpeg"
+	"image/png"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"slices"
 	"strings"
 
+	"github.com/chai2010/webp"
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/mrparano1d/morphadon"
 )
@@ -238,6 +244,95 @@ func (a *AssetManager) transformJS(outputFile string, assets []morphadon.Asset[*
 	return nil
 }
 
+func (a *AssetManager) decodeImage(path string) (image image.Image, err error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open image %s: %w", path, err)
+	}
+	defer file.Close()
+
+	switch filepath.Ext(path) {
+	case ".png":
+		return png.Decode(file)
+	case ".jpg":
+		return jpeg.Decode(file)
+	case ".gif":
+		return gif.Decode(file)
+	default:
+		return nil, fmt.Errorf("unsupported image type: %s", filepath.Ext(path))
+	}
+}
+
+func (a *AssetManager) transformImages(assets []morphadon.Asset[*Context]) error {
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		return fmt.Errorf("failed to get current working directory: %w", err)
+	}
+
+	outputDir := filepath.Join(cwd, a.config.OutputDir)
+	imagesDir := filepath.Join(outputDir, "..")
+
+	var buf bytes.Buffer
+	for _, asset := range assets {
+		rel, err := filepath.Rel(imagesDir, asset.Path())
+		if err != nil {
+			return fmt.Errorf("failed to get relative path for image %s: %w", asset.Path(), err)
+		}
+
+		imageDir := filepath.Join(outputDir, rel)
+		err = os.MkdirAll(imageDir, 0755)
+		if err != nil {
+			return fmt.Errorf("failed to create image dir %s: %w", imageDir, err)
+		}
+
+		// check if image is webp or svg then just copy it
+		switch filepath.Ext(asset.Path()) {
+		case ".svg", ".webp":
+			assetData, err := os.ReadFile(asset.Path())
+			if err != nil {
+				return fmt.Errorf("failed to read image %s: %w", asset.Path(), err)
+			}
+
+			err = os.WriteFile(imageDir, assetData, 0644)
+			if err != nil {
+				return fmt.Errorf("failed to write image %s: %w", asset.Path(), err)
+			}
+			continue
+		}
+
+		decodedImg, err := a.decodeImage(asset.Path())
+		if err != nil {
+			return fmt.Errorf("failed to decode image %s: %w", asset.Path(), err)
+		}
+		if err = webp.Encode(&buf, decodedImg, &webp.Options{Lossless: false, Quality: 80}); err != nil {
+			return fmt.Errorf("failed to encode image %s: %w", asset.Path(), err)
+		}
+
+		if err = os.WriteFile(filepath.Join(filepath.Dir(imageDir), filepath.Base(strings.TrimSuffix(imageDir, filepath.Ext(imageDir)))+".webp"), buf.Bytes(), 0644); err != nil {
+			return fmt.Errorf("failed to write image %s: %w", asset.Path(), err)
+		}
+		buf.Reset()
+	}
+
+	return nil
+}
+
+func (a *AssetManager) AssetPathToBuiltPath(assetPath string) string {
+
+	outputDir := a.config.OutputDir
+	imageDir := filepath.Join(outputDir, assetPath)
+
+	// check if image is webp or svg then use the same path
+	switch filepath.Ext(assetPath) {
+	case ".svg", ".webp":
+		return filepath.Join(imageDir, assetPath)
+	}
+
+	// everything else is converted to webp
+	return fmt.Sprintf("public/%s.webp", strings.TrimSuffix(assetPath, filepath.Ext(assetPath)))
+}
+
 func (a *AssetManager) BuildCSS() error {
 
 	globalStylesheets, scopedStylesheets := a.filterGlobalAndScopedAssets(a.findAssetType(morphadon.AssetTypeCSS))
@@ -278,6 +373,25 @@ func (a *AssetManager) BuildJS() error {
 	return nil
 }
 
+func (a *AssetManager) BuildImages() error {
+
+	globalImages, scopedImages := a.filterGlobalAndScopedAssets(a.findAssetType(morphadon.AssetTypePNG, morphadon.AssetTypeJPG, morphadon.AssetTypeGIF, morphadon.AssetTypeSVG))
+
+	if len(globalImages) > 0 {
+		if err := a.transformImages(globalImages); err != nil {
+			return fmt.Errorf("failed to transform global images: %w", err)
+		}
+	}
+
+	for scope, images := range scopedImages {
+		if err := a.transformImages(images); err != nil {
+			return fmt.Errorf("failed to transform images for %s scope: %w", scope.String(), err)
+		}
+	}
+
+	return nil
+}
+
 func (a *AssetManager) Build() error {
 
 	// remove output dir
@@ -304,7 +418,10 @@ func (a *AssetManager) Build() error {
 		return fmt.Errorf("failed to build js: %w", err)
 	}
 
-	// globalImages, scopedImages := a.filterGlobalAndScopedAssets(a.findAssetType(morphadon.AssetTypePNG, morphadon.AssetTypeJPG, morphadon.AssetTypeGIF, morphadon.AssetTypeSVG))
+	err = a.BuildImages()
+	if err != nil {
+		return fmt.Errorf("failed to build images: %w", err)
+	}
 
 	return nil
 }

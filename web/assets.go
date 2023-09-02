@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/mrparano1d/morphadon"
 )
@@ -76,15 +77,26 @@ func NewCSSAsset(path string, scope ...morphadon.Scope) *WebAsset {
 	return NewWebAsset(path, morphadon.AssetTypeCSS, s)
 }
 
-func NewImageAsset(path string, assetType morphadon.AssetType, scope ...morphadon.Scope) *WebAsset {
-	if morphadon.IsImageAssetType(assetType) {
-		var s morphadon.Scope
-		if len(scope) > 0 {
-			s = scope[0]
-		} else {
-			s = morphadon.ScopeGlobal
+func NewImageAsset(path string, assetType ...morphadon.AssetType) *WebAsset {
+	var imageType morphadon.AssetType
+	if len(assetType) > 0 {
+		imageType = assetType[0]
+	} else {
+		switch filepath.Ext(path) {
+		case ".jpg", ".jpeg":
+			imageType = morphadon.AssetTypeJPG
+		case ".png":
+			imageType = morphadon.AssetTypePNG
+		case ".svg":
+			imageType = morphadon.AssetTypeSVG
+		case ".gif":
+			imageType = morphadon.AssetTypeGIF
+		default:
+			imageType = morphadon.AssetTypeAny
 		}
-		return NewWebAsset(path, assetType, s)
+	}
+	if morphadon.IsImageAssetType(imageType) {
+		return NewWebAsset(path, imageType, morphadon.ScopeGlobal)
 	}
 	panic(fmt.Errorf("invalid image asset type: %s", assetType))
 }
