@@ -7,7 +7,13 @@ import (
 func main() {
 
 	app := web.CreateWebApp()
-	app.Use(web.NewWebPlugin())
+	app.Use(web.NewWebPlugin(
+		web.PluginWithAssetManagerConfig(&web.AssetManagerConfig{
+			SrcDir:    "./web",
+			OutputDir: "./web/public",
+		}),
+		web.PluginWithPresenterHttpDir("./web/public"),
+	))
 	app.RegisterSystem(NewExampleSystem())
 
 	err := app.Mount()

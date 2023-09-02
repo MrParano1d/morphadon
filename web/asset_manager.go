@@ -116,18 +116,24 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 		// transform css with postcss
 		tmpFile := strings.TrimSuffix(filepath.Base(file), filepath.Ext(file)) + "." + getMD5Hash(file)[0:7] + ".css"
 
+		absTmpFilePath, err := filepath.Abs(filepath.Join(a.config.OutputDir, tmpFile))
+		if err != nil {
+			return fmt.Errorf("failed to get absolute path for tmp file: %w", err)
+		}
+
 		// write tmp file
-		command := exec.Command("npx", "tailwindcss", "-i", file, "-o", filepath.Join(a.config.OutputDir, tmpFile))
+		command := exec.Command("npx", "tailwindcss", "-i", file, "-o", absTmpFilePath)
 		command.Dir = srcCwd
 		command.Stdin = os.Stdin
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr
-		err := command.Run()
+		err = command.Run()
 		if err != nil {
 			return fmt.Errorf("failed to transform css %s: %w", file, err)
 		}
 		entryPoints[i] = filepath.Join(a.config.OutputDir, tmpFile)
-		asset.SetTargetPath(filepath.Join(a.config.OutputDir, outputFile))
+
+		asset.SetTargetPath(filepath.Join("public", outputFile))
 	}
 
 	stylesheets := make([]string, len(entryPoints))
@@ -187,7 +193,7 @@ func (a *AssetManager) transformJS(outputFile string, assets []morphadon.Asset[*
 	scripts := make([]string, len(assets))
 	for i, asset := range assets {
 		scripts[i] = fmt.Sprintf("import \"%s\";", asset.Path())
-		asset.SetTargetPath(filepath.Join(a.config.OutputDir, outputFile))
+		asset.SetTargetPath(filepath.Join("public", outputFile))
 	}
 
 	ctx, err := api.Context(api.BuildOptions{
