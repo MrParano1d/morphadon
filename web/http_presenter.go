@@ -15,8 +15,16 @@ import (
 
 type MarlaHttpPresenterOption func(*MarlaHttpPresenter)
 
+func HttpPresenterWithFilesDir(filesDir http.Dir) MarlaHttpPresenterOption {
+	return func(p *MarlaHttpPresenter) {
+		p.filesDir = filesDir
+	}
+}
+
 type MarlaHttpPresenter struct {
 	app morphadon.App[*Context]
+
+	filesDir http.Dir
 
 	router   *chi.Mux
 	renderer morphadon.Renderer[*Context]
@@ -32,16 +40,18 @@ func NewHttpPresenter(opts ...MarlaHttpPresenterOption) *MarlaHttpPresenter {
 	r.Use(middleware.Recoverer)
 	workDir, _ := os.Getwd()
 	filesDir := http.Dir(filepath.Join(workDir, "public"))
-	FileServer(r, "/public", filesDir)
 
 	presenter := &MarlaHttpPresenter{
 		router:   r,
 		renderer: NewBytesRenderer(),
+		filesDir: filesDir,
 	}
 
 	for _, opt := range opts {
 		opt(presenter)
 	}
+
+	FileServer(r, "/public", presenter.filesDir)
 
 	return presenter
 }
