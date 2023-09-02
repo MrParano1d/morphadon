@@ -105,6 +105,8 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 		return fmt.Errorf("failed to get current working directory: %w", err)
 	}
 
+	srcCwd := filepath.Join(cwd, a.config.SrcDir)
+
 	entryPoints := make([]string, len(assets))
 
 	// transform css with postcss to tmp files
@@ -116,6 +118,7 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 
 		// write tmp file
 		command := exec.Command("npx", "tailwindcss", "-i", file, "-o", filepath.Join(a.config.OutputDir, tmpFile))
+		command.Dir = srcCwd
 		command.Stdin = os.Stdin
 		command.Stdout = os.Stdout
 		command.Stderr = os.Stderr
