@@ -122,7 +122,7 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 		// transform css with postcss
 		tmpFile := strings.TrimSuffix(filepath.Base(file), filepath.Ext(file)) + "." + getMD5Hash(file)[0:7] + ".css"
 
-		absTmpFilePath, err := filepath.Abs(filepath.Join(a.config.OutputDir, tmpFile))
+		absTmpFilePath, err := filepath.Abs(filepath.Join(a.config.SrcDir, tmpFile))
 		if err != nil {
 			return fmt.Errorf("failed to get absolute path for tmp file: %w", err)
 		}
@@ -137,7 +137,7 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 		if err != nil {
 			return fmt.Errorf("failed to transform css %s: %w", file, err)
 		}
-		entryPoints[i] = filepath.Join(a.config.OutputDir, tmpFile)
+		entryPoints[i] = filepath.Join(a.config.SrcDir, tmpFile)
 
 		asset.SetTargetPath(filepath.Join("public", outputFile))
 	}
@@ -155,16 +155,16 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 			Loader:     api.LoaderCSS,
 			ResolveDir: cwd,
 		},
+		Loader: map[string]api.Loader{
+			".css": api.LoaderCSS,
+			".ttf": api.LoaderFile,
+		},
 		Bundle:            true,
 		MinifyWhitespace:  true,
 		MinifySyntax:      true,
 		MinifyIdentifiers: true,
 		Write:             true,
 		Outfile:           filepath.Join(a.config.OutputDir, outputFile),
-		Loader: map[string]api.Loader{
-			".css": api.LoaderCSS,
-			".ttf": api.LoaderFile,
-		},
 	})
 
 	css := ctx.Rebuild()
@@ -183,7 +183,10 @@ func (a *AssetManager) transformCSS(outputFile string, assets []morphadon.Asset[
 	}
 
 	if len(css.Errors) > 0 {
-		return fmt.Errorf("failed to build css: %w", css.Errors)
+		for _, error := range css.Errors {
+			fmt.Printf("error building css: %s\n", error.Text)
+		}
+		return fmt.Errorf("failed to build css see above for errors")
 	}
 
 	return nil
