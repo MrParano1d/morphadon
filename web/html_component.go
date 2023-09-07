@@ -1,6 +1,8 @@
 package web
 
 import (
+	"slices"
+
 	g "github.com/maragudk/gomponents"
 	c "github.com/maragudk/gomponents/components"
 	html "github.com/maragudk/gomponents/html"
@@ -40,6 +42,8 @@ func (h *HTMLComponent) Render(data morphadon.SetupData) any {
 		scripts = append(scripts, asset.TargetPath())
 	}
 
+	scripts = slices.Compact(scripts)
+
 	var styles []string
 	for _, asset := range assets.All() {
 		if asset.Type() != morphadon.AssetTypeCSS {
@@ -51,11 +55,13 @@ func (h *HTMLComponent) Render(data morphadon.SetupData) any {
 		styles = append(styles, asset.TargetPath())
 	}
 
+	styles = slices.Compact(styles)
+
 	var title string
 	if h.Context().Title != "" {
 		title = h.Context().Title
 	} else {
-		title = "Marla//Morphadon powered website"
+		title = "MrParano1d.Morphadon powered website"
 	}
 
 	return c.HTML5(
