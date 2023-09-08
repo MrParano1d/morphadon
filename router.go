@@ -2,6 +2,7 @@ package morphadon
 
 import (
 	"regexp"
+	"slices"
 
 	"net/http"
 	"net/url"
@@ -31,7 +32,12 @@ func (r *Router) findRoute(parentPath string, path string) *plainRoute {
 		panic(err)
 	}
 
-	for _, route := range r.routes {
+	routes := make([]plainRoute, len(r.routes))
+	copy(routes, r.routes)
+
+	slices.Reverse(routes)
+
+	for _, route := range routes {
 		if route.pathRegexp.MatchString(path) {
 			return &route
 		}
@@ -114,7 +120,6 @@ func NewRoute(name string, path string, page Page, children ...Route) Route {
 		children: children,
 	}
 }
-
 
 func (r *plainRoute) Parent() *plainRoute {
 	return r.parent
