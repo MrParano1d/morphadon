@@ -1,4 +1,4 @@
-package web
+package morphadon
 
 import (
 	"fmt"
@@ -6,12 +6,13 @@ import (
 	"reflect"
 
 	g "github.com/maragudk/gomponents"
-	"github.com/mrparano1d/morphadon"
 )
 
 func h(c any, ctx *Context) g.Node {
 	switch v := c.(type) {
-	case morphadon.Component[*Context]:
+	case Renderable:
+		return v.(g.Node)
+	case Component:
 		component := v
 		component.SetContext(ctx)
 		return component.Render(component.Setup()).(g.Node)
@@ -23,7 +24,7 @@ func h(c any, ctx *Context) g.Node {
 	return nil
 }
 
-func MustRenderSlot(slotName string, c morphadon.Component[*Context]) g.Node {
+func MustRenderSlot(slotName string, c Component) g.Node {
 	node, err := RenderSlot(slotName, c)
 	if err != nil {
 		log.Printf("[warn] %v\n", err)
@@ -32,7 +33,7 @@ func MustRenderSlot(slotName string, c morphadon.Component[*Context]) g.Node {
 	return node
 }
 
-func RenderSlot(slotName string, c morphadon.Component[*Context]) (g.Node, error) {
+func RenderSlot(slotName string, c Component) (g.Node, error) {
 	slot, ok := c.Slots()[slotName]
 	if !ok {
 		return nil, nil
@@ -45,9 +46,9 @@ func RenderSlot(slotName string, c morphadon.Component[*Context]) (g.Node, error
 }
 
 func ImageSrc(src string) string {
-	app := morphadon.GetInstance[*Context]()
+	app := GetInstance()
 
-	webAssetManager, ok := app.AssetManager().(*AssetManager)
+	webAssetManager, ok := app.AssetManager().(*WebAssetManager)
 	if !ok {
 		panic("asset manager is not a web.AssetManager")
 	}

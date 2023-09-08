@@ -1,9 +1,7 @@
-package web
+package morphadon
 
 import (
 	"context"
-
-	"github.com/mrparano1d/morphadon"
 )
 
 type ScopeKey string
@@ -13,14 +11,14 @@ const (
 )
 
 type scopeInstance struct {
-	scope morphadon.Scope
+	scope Scope
 }
 
-func (s *scopeInstance) Scope() morphadon.Scope {
+func (s *scopeInstance) Scope() Scope {
 	return s.scope
 }
 
-func provideScope(ctx *Context, scope morphadon.Scope) {
+func ProvideScope(ctx *Context, scope Scope) {
 	ctx.SetContext(
 		context.WithValue(ctx.Context(), ScopeSymbol, &scopeInstance{
 			scope: scope,
@@ -28,7 +26,7 @@ func provideScope(ctx *Context, scope morphadon.Scope) {
 	)
 }
 
-func useScope(ctx *Context) *scopeInstance {
+func UseScope(ctx *Context) *scopeInstance {
 	scope, ok := ctx.Context().Value(ScopeSymbol).(*scopeInstance)
 	if !ok {
 		panic("scope composable not provided")

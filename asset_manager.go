@@ -31,9 +31,9 @@ func IsImageAssetType(assetType AssetType) bool {
 	return slices.Contains(AssetImageTypes, assetType)
 }
 
-type Asset[C Context] interface {
+type Asset interface {
 	// Init is called once the asset is registered.
-	Init(App[C]) error
+	Init(App) error
 
 	Path() string
 	SetPath(string)
@@ -44,16 +44,19 @@ type Asset[C Context] interface {
 	SetScope(Scope)
 }
 
-type AssetManager[C Context] interface {
-	Init(app App[C]) error
+type AssetManager interface {
+	Init(app App) error
+
+	SetConfig(*AssetManagerConfig)
+	Config() *AssetManagerConfig
 
 	// RegisterAsset registers an asset to the asset manager.
 	// The asset manager will use the asset's name to identify the asset.
-	RegisterAsset(asset Asset[C]) error
+	RegisterAsset(asset Asset) error
 
-	ScopeAssets(scope Scope) []Asset[C]
+	ScopeAssets(scope Scope) []Asset
 
-	Assets() []Asset[C]
+	Assets() []Asset
 
 	SrcDir() string
 	SetSrcDir(string)

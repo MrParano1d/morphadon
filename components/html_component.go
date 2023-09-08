@@ -1,4 +1,4 @@
-package web
+package components
 
 import (
 	"slices"
@@ -10,23 +10,23 @@ import (
 )
 
 type HTMLComponent struct {
-	*morphadon.DefaultComponent[*Context]
+	*morphadon.DefaultComponent
 }
 
-var _ morphadon.Component[*Context] = (*HTMLComponent)(nil)
+var _ morphadon.Component = (*HTMLComponent)(nil)
 
 func HTML(children ...g.Node) *HTMLComponent {
 	return &HTMLComponent{
-		DefaultComponent: morphadon.NewDefaultComponentWithSlots[*Context](morphadon.Slots{
+		DefaultComponent: morphadon.NewDefaultComponentWithSlots(morphadon.Slots{
 			"default": children,
 		}),
 	}
 }
 
-func (h *HTMLComponent) Render(data morphadon.SetupData) any {
+func (h *HTMLComponent) Render(data morphadon.SetupData) morphadon.Renderable {
 
-	assets := useAssets()
-	pageScope := useScope(h.Context())
+	assets := morphadon.UseAssets()
+	pageScope := morphadon.UseScope(h.Context())
 
 	var scripts []string
 	for _, asset := range assets.All() {
@@ -94,7 +94,7 @@ func (h *HTMLComponent) Render(data morphadon.SetupData) any {
 			Body: []g.Node{
 				h.Context().BodyAttrs,
 				h.Context().H(
-					MustRenderSlot("default", h),
+					morphadon.MustRenderSlot("default", h),
 				),
 			},
 		},

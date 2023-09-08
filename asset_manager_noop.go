@@ -1,37 +1,44 @@
 package morphadon
 
-type AssetManagerNoop[C Context] struct {
+type AssetManagerNoop struct {
 }
 
-var _ AssetManager[*TodoContext] = &AssetManagerNoop[*TodoContext]{}
+var _ AssetManager = &AssetManagerNoop{}
 
-func NewAssetManagerNoop[C Context]() *AssetManagerNoop[C] {
-	return &AssetManagerNoop[C]{}
+func NewAssetManagerNoop() *AssetManagerNoop {
+	return &AssetManagerNoop{}
 }
 
-func (a *AssetManagerNoop[C]) Init(App[C]) error {
+func (a *AssetManagerNoop) SetConfig(config *AssetManagerConfig) {
+}
+
+func (a *AssetManagerNoop) Config() *AssetManagerConfig {
 	return nil
 }
 
-func (a *AssetManagerNoop[C]) SetSrcDir(string)  {
+func (a *AssetManagerNoop) Init(App) error {
+	return nil
 }
 
-func (a *AssetManagerNoop[C]) SrcDir() string {
+func (a *AssetManagerNoop) SetSrcDir(string) {
+}
+
+func (a *AssetManagerNoop) SrcDir() string {
 	return ""
 }
 
-func (a *AssetManagerNoop[C]) RegisterAsset(asset Asset[C]) error {
+func (a *AssetManagerNoop) RegisterAsset(asset Asset) error {
 	return nil
 }
 
-func (a *AssetManagerNoop[C]) ScopeAssets(scope Scope) []Asset[C] {
+func (a *AssetManagerNoop) ScopeAssets(scope Scope) []Asset {
 	return nil
 }
 
-func (a *AssetManagerNoop[C]) Assets() []Asset[C] {
+func (a *AssetManagerNoop) Assets() []Asset {
 	return nil
 }
 
-func (a *AssetManagerNoop[C]) Build() error {
+func (a *AssetManagerNoop) Build() error {
 	return nil
 }

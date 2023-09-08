@@ -1,73 +1,84 @@
 package morphadon
 
+import (
+	"io"
+
+	g "github.com/maragudk/gomponents"
+)
+
+type Renderable interface {
+	Render(w io.Writer) error
+}
+
 type SetupData map[string]interface{}
 
-type Component[C Context] interface {
+type Component interface {
 	Setup() SetupData
-	Assets() []Asset[C]
+	Context() *Context
+	SetContext(*Context)
+	Assets() []Asset
 	Slots() Slots
 	Props() Properties
-	Context() C
-	SetContext(ctx C)
-	Components() []Component[C]
-	Render(data SetupData) any
+	Components() []Component
+	Render(data SetupData) Renderable
 }
 
-type DefaultComponent[C Context] struct {
-	ctx   C
+type DefaultComponent struct {
 	props Properties
 	slots Slots
+
+	ctx *Context
 }
 
-var _ Component[*TodoContext] = &DefaultComponent[*TodoContext]{}
+var _ Component = &DefaultComponent{}
 
-func NewDefaultComponent[C Context]() *DefaultComponent[C] {
-	return NewDefaultComponentWithPropsAndSlots[C](Properties{}, Slots{})
+func NewDefaultComponent() *DefaultComponent {
+	return NewDefaultComponentWithPropsAndSlots(Properties{}, Slots{})
 }
 
-func NewDefaultComponentWithProps[C Context](props Properties) *DefaultComponent[C] {
-	return NewDefaultComponentWithPropsAndSlots[C](props, Slots{})
+func NewDefaultComponentWithProps(props Properties) *DefaultComponent {
+	return NewDefaultComponentWithPropsAndSlots(props, Slots{})
 }
 
-func NewDefaultComponentWithSlots[C Context](slots Slots) *DefaultComponent[C] {
-	return NewDefaultComponentWithPropsAndSlots[C](Properties{}, slots)
+func NewDefaultComponentWithSlots(slots Slots) *DefaultComponent {
+	return NewDefaultComponentWithPropsAndSlots(Properties{}, slots)
 }
 
-func NewDefaultComponentWithPropsAndSlots[C Context](props Properties, slots Slots) *DefaultComponent[C] {
-	return &DefaultComponent[C]{
+func NewDefaultComponentWithPropsAndSlots(props Properties, slots Slots) *DefaultComponent {
+	return &DefaultComponent{
 		props: props,
 		slots: slots,
 	}
 }
 
-func (c *DefaultComponent[C]) Setup() SetupData {
-	return SetupData{}
-}
-
-func (c *DefaultComponent[C]) Context() C {
+func (c *DefaultComponent) Context() *Context {
 	return c.ctx
 }
 
-func (c *DefaultComponent[C]) SetContext(ctx C) {
+func (c *DefaultComponent) SetContext(ctx *Context) {
 	c.ctx = ctx
 }
 
-func (c *DefaultComponent[C]) Slots() Slots {
+func (c *DefaultComponent) Setup() SetupData {
+	return SetupData{}
+}
+
+func (c *DefaultComponent) Slots() Slots {
 	return c.slots
 }
 
-func (c *DefaultComponent[C]) Props() Properties {
+func (c *DefaultComponent) Props() Properties {
 	return c.props
 }
 
-func (c *DefaultComponent[C]) Assets() []Asset[C] {
-	return make([]Asset[C], 0)
+func (c *DefaultComponent) Assets() []Asset {
+	return make([]Asset, 0)
 }
 
-func (c *DefaultComponent[C]) Components() []Component[C] {
-	return make([]Component[C], 0)
+func (c *DefaultComponent) Components() []Component {
+	return make([]Component, 0)
 }
 
-func (c *DefaultComponent[C]) Render(data SetupData) any {
-	return nil
+func (c *DefaultComponent) Render(data SetupData) Renderable {
+	return g.Text("")
 }
