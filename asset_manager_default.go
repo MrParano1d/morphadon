@@ -73,7 +73,7 @@ func (a *AssetManagerDefault) RegisterAsset(asset Asset) error {
 		}
 
 		// check if asset is a file
-		abs1, _ := filepath.Abs(a.getAssetFilePath(registeredAsset))
+		abs1 := registeredAsset.Path()
 		abs2, _ := filepath.Abs(a.getAssetFilePath(asset))
 		if abs1 == abs2 {
 			exists = true
@@ -206,8 +206,8 @@ func (a *WebAssetManager) filterGlobalAndScopedAssets(assets []Asset) ([]Asset, 
 
 	globalAssets = slices.Compact(globalAssets)
 	for k, v := range scopeGroupedAssets {
-	scopeGroupedAssets[k] = slices.Compact(v)
-}
+		scopeGroupedAssets[k] = slices.Compact(v)
+	}
 
 	return globalAssets, scopeGroupedAssets
 }
