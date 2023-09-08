@@ -132,7 +132,7 @@ func (a *App) Mount(component Component) error {
 		r.Group(func(r chi.Router) {
 			r.Use(router.parentMiddlewares(&route)...)
 			r.Use(route.page.Middlewares()...)
-			r.Get(route.Path(), func(w http.ResponseWriter, r *http.Request) {
+			r.Any(route.Path(), func(w http.ResponseWriter, r *http.Request) {
 
 				ctx := NewContext(
 					ContextWithRequest(r),
