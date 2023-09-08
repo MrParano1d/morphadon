@@ -204,6 +204,11 @@ func (a *WebAssetManager) filterGlobalAndScopedAssets(assets []Asset) ([]Asset, 
 		scopeGroupedAssets[asset.Scope()] = append(scopeGroupedAssets[asset.Scope()], asset)
 	}
 
+	globalAssets = slices.Compact(globalAssets)
+	for k, v := range scopeGroupedAssets {
+	scopeGroupedAssets[k] = slices.Compact(v)
+}
+
 	return globalAssets, scopeGroupedAssets
 }
 
