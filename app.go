@@ -132,7 +132,7 @@ func (a *App) Mount(component Component) error {
 		r.Group(func(r chi.Router) {
 			r.Use(router.parentMiddlewares(&route)...)
 			r.Use(route.page.Middlewares()...)
-			r.Any(route.Path(), func(w http.ResponseWriter, r *http.Request) {
+			r.Handle(route.Path(), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 				ctx := NewContext(
 					ContextWithRequest(r),
@@ -148,7 +148,7 @@ func (a *App) Mount(component Component) error {
 				if err := renderer.Render(w); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 				}
-			})
+			}))
 		})
 	}
 
