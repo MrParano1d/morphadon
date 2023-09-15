@@ -12,6 +12,8 @@ func h(c any, ctx *Context) g.Node {
 	switch v := c.(type) {
 	case Renderable:
 		return v.(g.Node)
+	case []Renderable:
+		return g.Group(v)
 	case Component:
 		component := v
 		component.SetContext(ctx)
