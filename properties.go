@@ -7,6 +7,10 @@ func (props Properties) Has(propName string) bool {
 	return ok
 }
 
+func (props Properties) Get(propName string) any {
+	return props[propName]
+}
+
 func PropStr(propName string, props Properties) string {
 	return PropStrWithDefault(propName, props, "")
 }
