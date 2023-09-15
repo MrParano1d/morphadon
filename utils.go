@@ -13,7 +13,11 @@ func h(c any, ctx *Context) g.Node {
 	case Renderable:
 		return v.(g.Node)
 	case []Renderable:
-		return g.Group(v)
+		nodes := make([]g.Node, len(v))
+		for i, r := range v {
+			nodes[i] = h(r, ctx)
+		}
+		return g.Group(nodes)
 	case Component:
 		component := v
 		component.SetContext(ctx)
