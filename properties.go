@@ -2,6 +2,11 @@ package morphadon
 
 type Properties map[string]any
 
+func (props Properties) Has(propName string) bool {
+	_, ok := props[propName]
+	return ok
+}
+
 func PropStr(propName string, props Properties) string {
 	return PropStrWithDefault(propName, props, "")
 }
