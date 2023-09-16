@@ -11,6 +11,30 @@ func (props Properties) Get(propName string) any {
 	return props[propName]
 }
 
+func (props Properties) GetStr(propName string) string {
+	return PropStr(propName, props)
+}
+
+func (props Properties) GetBool(propName string) bool {
+	return PropBool(propName, props)
+}
+
+func (props Properties) GetInt(propName string) int {
+	prop, ok := props[propName]
+	if !ok {
+		return 0
+	}
+	return prop.(int)
+}
+
+func (props Properties) GetFloat(propName string) float64 {
+	prop, ok := props[propName]
+	if !ok {
+		return 0
+	}
+	return prop.(float64)
+}
+
 func PropStr(propName string, props Properties) string {
 	return PropStrWithDefault(propName, props, "")
 }
