@@ -55,7 +55,7 @@ type App struct {
 
 	am AssetManager
 
-	middleware []func(http.Handler) http.Handler
+	middleware []Middleware
 
 	serverEndpoints []ServerEndpoint
 
@@ -93,7 +93,7 @@ func (a *App) SetAssetManager(am AssetManager) {
 	a.am = am
 }
 
-func (a *App) RegisterMiddleware(middleware ...func(http.Handler) http.Handler) {
+func (a *App) RegisterMiddleware(middleware ...Middleware) {
 	a.middleware = append(a.middleware, middleware...)
 }
 
@@ -117,7 +117,7 @@ func (a *App) registerComponent(component Component) {
 func (a *App) Mount(component Component) error {
 
 	r := chi.NewRouter()
-	r.Use(a.middleware...)
+	r.Use(MiddlewaresToHandlerSlice(a.middleware)...)
 
 	router := a.GetService(routerServiceKey).(*Router)
 
@@ -130,8 +130,8 @@ func (a *App) Mount(component Component) error {
 		a.registerComponent(route.page)
 
 		r.Group(func(r chi.Router) {
-			r.Use(router.parentMiddlewares(&route)...)
-			r.Use(route.page.Middlewares()...)
+			r.Use(MiddlewaresToHandlerSlice(router.parentMiddlewares(&route))...)
+			r.Use(MiddlewaresToHandlerSlice(route.page.Middlewares())...)
 			r.Handle(route.Path(), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 				ctx := NewContext(

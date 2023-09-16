@@ -36,8 +36,8 @@ func NewHelloPage() *HelloPage {
 	}
 }
 
-func (c *HelloPage) Middlewares() []func(http.Handler) http.Handler {
-	return []func(http.Handler) http.Handler{
+func (c *HelloPage) Middlewares() []morphadon.Middleware {
+	return []morphadon.Middleware{
 		func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("X-HELLO", "HELLO")
@@ -64,8 +64,8 @@ func NewWorldPage() *WorldPage {
 	}
 }
 
-func (c *WorldPage) Middlewares() []func(http.Handler) http.Handler {
-	return []func(http.Handler) http.Handler{
+func (c *WorldPage) Middlewares() []morphadon.Middleware {
+	return []morphadon.Middleware{
 		func(next http.Handler) http.Handler {
 			return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 				w.Header().Set("X-WORLD", "WORLD")
@@ -102,7 +102,7 @@ func main() {
 
 	app.Use(morphadon.MorphadonRouter([]morphadon.Route{
 		morphadon.NewRoute("hello", "/", NewHelloPage(), []morphadon.Route{
-			morphadon.NewRoute("world", "/hello-world", NewWorldPage()),
+			morphadon.NewRoute("world", "/", NewWorldPage()),
 		}...),
 	}))
 

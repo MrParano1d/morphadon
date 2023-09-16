@@ -2,10 +2,20 @@ package morphadon
 
 import "net/http"
 
+type Middleware func(http.Handler) http.Handler
+
+func MiddlewaresToHandlerSlice(middlewares []Middleware) []func(http.Handler) http.Handler {
+	handlers := make([]func(http.Handler) http.Handler, len(middlewares))
+	for i, middleware := range middlewares {
+		handlers[i] = middleware
+	}
+	return handlers
+}
+
 type Page interface {
 	Component
 
-	Middlewares() []func(http.Handler) http.Handler
+	Middlewares() []Middleware
 }
 
 type defaultPage struct {
@@ -18,6 +28,6 @@ func NewPage() Page {
 	}
 }
 
-func (p *defaultPage) Middlewares() []func(http.Handler) http.Handler {
-	return make([]func(http.Handler) http.Handler, 0)
+func (p *defaultPage) Middlewares() []Middleware {
+	return make([]Middleware, 0)
 }

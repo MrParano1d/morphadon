@@ -4,7 +4,6 @@ import (
 	"regexp"
 	"slices"
 
-	"net/http"
 	"net/url"
 )
 
@@ -49,9 +48,9 @@ func (r *Router) CurrentRoute(ctx *Context) *plainRoute {
 	return r.findRoute("/", ctx.Req.URL.Path)
 }
 
-func (r *Router) parentMiddlewares(route *plainRoute) []func(http.Handler) http.Handler {
+func (r *Router) parentMiddlewares(route *plainRoute) []Middleware {
 	if route.parent == nil {
-		return make([]func(http.Handler) http.Handler, 0)
+		return make([]Middleware, 0)
 	}
 	return append(route.parent.page.Middlewares(), r.parentMiddlewares(route.parent)...)
 }
