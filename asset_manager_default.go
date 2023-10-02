@@ -441,7 +441,7 @@ func (a *WebAssetManager) AssetPathToBuiltPath(assetPath string) string {
 	}
 
 	// everything else is converted to webp
-	return fmt.Sprintf("public/%s.webp", strings.TrimSuffix(assetPath, filepath.Ext(assetPath)))
+	return fmt.Sprintf("/public/%s.webp", strings.TrimSuffix(assetPath, filepath.Ext(assetPath)))
 }
 
 func (a *WebAssetManager) BuildCSS() error {
