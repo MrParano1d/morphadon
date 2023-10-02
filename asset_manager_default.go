@@ -247,7 +247,7 @@ func (a *WebAssetManager) transformCSS(outputFile string, assets []Asset) error 
 		}
 		entryPoints[i] = filepath.Join(a.config.SrcDir, tmpFile)
 
-		asset.SetTargetPath(filepath.Join("public", outputFile))
+		asset.SetTargetPath("/" + filepath.Join("public", outputFile))
 	}
 
 	stylesheets := make([]string, len(entryPoints))
@@ -310,7 +310,7 @@ func (a *WebAssetManager) transformJS(outputFile string, assets []Asset) error {
 	scripts := make([]string, len(assets))
 	for i, asset := range assets {
 		scripts[i] = fmt.Sprintf("import \"%s\";", asset.Path())
-		asset.SetTargetPath(filepath.Join("public", outputFile))
+		asset.SetTargetPath("/" + filepath.Join("public", outputFile))
 	}
 
 	ctx, err := api.Context(api.BuildOptions{
